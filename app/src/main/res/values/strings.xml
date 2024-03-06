@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">StyleSync</string>
+    <dimen name="nav_bar_height">72dp</dimen>
 </resources>

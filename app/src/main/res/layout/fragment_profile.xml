@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.profile.ProfileFragment">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fbtnCreateNewPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_add_24"
+        android:layout_margin="20dp"
+        android:layout_gravity="end|top"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fbtnEditProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_architecture_24"
+        android:layout_margin="20dp"
+        android:layout_gravity="start|top"
+        />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="20dp"
+            android:layout_gravity="center|top">
+
+            <ImageView
+                android:id="@+id/ivProfileImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/user"
+                android:layout_gravity="center"
+                />
+
+            <TextView
+                android:id="@+id/tvUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="USERNAME"
+                android:textColor="@color/black"
+                android:textSize="22dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPosts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/nav_bar_height"
+            tools:listitem="@layout/post_tile"/>
+
+    </LinearLayout>
+
+
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:elevation="18dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <ImageButton
+                android:id="@+id/ibNotification"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/baseline_notifications_24"
+
+                />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <ImageButton
+                android:id="@+id/ibHome"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_margin="20dp"
+                android:background="@drawable/home"
+                />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <ImageButton
+                android:id="@+id/ibProfile"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/user"
+                android:layout_marginEnd="40dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                />
+
+
+
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>
