@@ -32,10 +32,25 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        auth = Firebase.auth
         val view = inflater.inflate(R.layout.fragment_login, container, false)
         findAllViewsById(view)
         setAllOnClicks(view)
+
+        // Initialize Firebase Authentication
+        auth = FirebaseAuth.getInstance()
+// todo: get data from ui
+        // Initialize views
+//        val emailEditText: EditText = rootView.findViewById(R.id.idEdtEmail)
+//        val passwordEditText: EditText = rootView.findViewById(R.id.idEdtPassword)
+//        val loginButton: Button = rootView.findViewById(R.id.idBtnLogin)
+//
+//        // Handle login button click
+//        loginButton.setOnClickListener {
+//            val email = emailEditText.text.toString()
+//            val password = passwordEditText.text.toString()
+//            signIn
+////        }
+
         return view;
     }
 
@@ -55,28 +70,29 @@ class LoginFragment : Fragment() {
     }
 
     private fun signIn(email: String, password: String) {
-//        auth.signInWithEmailAndPassword(email, password)
-//            .addOnCompleteListener(this) { task ->
-//                if (task.isSuccessful) {
-//                    // Sign in success, update UI with the signed-in user's information
-//                    Log.d(TAG, "signInWithEmail:success")
-//                    val user = auth.currentUser
-//                    // updateUI(user)
-//                } else {
-//                    // If sign in fails, display a message to the user.
-//                    Log.w(TAG, "signInWithEmail:failure", task.exception)
-//                    Toast.makeText(
-//                        context,
-//                        "Authentication failed.",
-//                        Toast.LENGTH_SHORT,
-//                    ).show()
-//                    // updateUI(null)
-//                }
-//            }
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "signInWithEmail:success")
+                    val user = auth.currentUser
+                    // updateUI(user)
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInWithEmail:failure", task.exception)
+                    Toast.makeText(
+                        context,
+                        "Authentication failed.",
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                    // updateUI(null)
+                }
+            }
     }
 
     private fun signOut() {
         auth.signOut();
+        // updateUI()
     }
 
 }
