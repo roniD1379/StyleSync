@@ -1,7 +1,6 @@
-package com.application.stylesync.activities.register;
+package com.application.stylesync.activities.register
 
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModel
 
-public class RegisterViewModel extends ViewModel {
-    // TODO: Implement the ViewModel
+class RegisterViewModel : ViewModel() { // TODO: Implement the ViewModel
 }

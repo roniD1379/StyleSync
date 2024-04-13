@@ -1,38 +1,31 @@
-package com.application.stylesync.activities.profile;
+package com.application.stylesync.activities.profile
 
-import androidx.lifecycle.ViewModelProvider;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.application.stylesync.R
 
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.application.stylesync.R;
-
-public class ProfileFragment extends Fragment {
-
-    private ProfileViewModel mViewModel;
-
-    public static ProfileFragment newInstance() {
-        return new ProfileFragment();
+class ProfileFragment : Fragment() {
+    private var mViewModel: ProfileViewModel? = null
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_profile, container, false);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        mViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
         // TODO: Use the ViewModel
     }
 
+    companion object {
+        fun newInstance(): ProfileFragment {
+            return ProfileFragment()
+        }
+    }
 }
