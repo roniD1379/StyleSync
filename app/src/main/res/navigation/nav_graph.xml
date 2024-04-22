@@ -4,7 +4,7 @@
     app:startDestination="@id/loginFragment">
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.application.stylesync.activities.login.LoginFragment"
+        android:name="com.application.stylesync.fragments.login.LoginFragment"
         android:label="Auth"
         tools:layout="@layout/fragment_login" >
         <action
@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.application.stylesync.activities.home.HomeFragment"
+        android:name="com.application.stylesync.fragments.home.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -29,7 +29,7 @@
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.application.stylesync.activities.profile.ProfileFragment"
+        android:name="com.application.stylesync.fragments.profile.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" >
         <action
@@ -42,19 +42,22 @@
 
     <fragment
         android:id="@+id/createNewPostFragment"
-        android:name="com.application.stylesync.activities.create_new_post.CreateNewPostFragment"
+        android:name="com.application.stylesync.fragments.create_new_post.CreateNewPostFragment"
         android:label="Create New Post"
         tools:layout="@layout/fragment_create_new_post" >
     </fragment>
 
 <fragment
         android:id="@+id/registerFragment"
-        android:name="com.application.stylesync.activities.register.RegisterFragment"
+        android:name="com.application.stylesync.fragments.register.RegisterFragment"
         android:label="Register"
         tools:layout="@layout/fragment_register" >
     <action
         android:id="@+id/action_registerFragment_to_loginFragment"
         app:destination="@id/loginFragment" />
+    <action
+        android:id="@+id/action_registerFragment_to_homeFragment"
+        app:destination="@id/homeFragment" />
 </fragment>
 
 
