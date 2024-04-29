@@ -1,4 +1,4 @@
-package com.application.stylesync.Model
+package com.application.stylesync
 
 data class FBUser (
     var uid: String,

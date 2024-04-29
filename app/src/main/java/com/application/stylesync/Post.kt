@@ -1,4 +1,4 @@
-package com.example.myapp.firestore
+package com.application.stylesync
 
 data class Post(
     val title: String,

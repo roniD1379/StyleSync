@@ -21,12 +21,5 @@ class CreateNewPostFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         mViewModel = ViewModelProvider(this).get(CreateNewPostViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
-
-    companion object {
-        fun newInstance(): CreateNewPostFragment {
-            return CreateNewPostFragment()
-        }
     }
 }

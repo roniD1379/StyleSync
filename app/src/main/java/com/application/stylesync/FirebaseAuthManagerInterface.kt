@@ -1,4 +1,4 @@
-package com.application.stylesync.Model
+package com.application.stylesync
 
 interface FirebaseAuthManagerInterface {
     fun success();
