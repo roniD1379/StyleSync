@@ -1,11 +1,10 @@
 package com.application.stylesync.fragments.register
 
-import android.content.ContentValues
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -15,15 +14,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import com.application.stylesync.CustomSpinnerAdapter
-import com.application.stylesync.Model.FirebaseAuthManager
-import com.application.stylesync.Model.FirebaseAuthManagerInterface
+import com.application.stylesync.FirebaseAuthManagerInterface
 import com.application.stylesync.R
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import java.util.concurrent.Executor
 
 class RegisterFragment : Fragment() {
     private var mViewModel: RegisterViewModel? = null
@@ -36,6 +29,12 @@ class RegisterFragment : Fragment() {
     private lateinit var spColor: Spinner
     private lateinit var btnRegister: Button
     private lateinit var tvLogin: TextView;
+
+    private var chosenTopic: String = "A" // todo: change to the first option
+    private var chosenTheme: String = "A" // todo: change to the first option
+
+    val topicOptions = arrayOf("A", "B", "C")
+    val themeOptions = arrayOf("A", "B", "C")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,35 +53,42 @@ class RegisterFragment : Fragment() {
         mViewModel = ViewModelProvider(this).get(RegisterViewModel::class.java)
     }
 
-    override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = mAuth!!.currentUser
-        currentUser?.reload()
-    }
 
-    private fun setUpTopicSpinner (view: View) {
+    private fun setUpSpinners (view: View) {
         spTopic = view.findViewById(R.id.spTopic)
+        spColor = view.findViewById(R.id.spColor)
 
-        // Create an ArrayAdapter using the options list and a simple spinner layout
-        val adapter = this.context?.let {
-            CustomSpinnerAdapter(
-                it,
-                listOf("",)
-            )
-        }
+        val topicAdapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, topicOptions)
+        val themeAdapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, themeOptions)
 
         // Apply the adapter to the spinner
-        spTopic.adapter = adapter
+        spTopic.adapter = topicAdapter
+        spTopic.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                chosenTopic = parent.getItemAtPosition(position).toString()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
+
+        spColor.adapter = themeAdapter
+        spColor.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                chosenTheme = parent.getItemAtPosition(position).toString()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
     }
 
     private fun findAllViewsById(view: View) {
         etEmail = view.findViewById(R.id.etEmail)
         etUsername = view.findViewById(R.id.etUsername)
         etPassword = view.findViewById(R.id.etPassword)
-        setUpTopicSpinner(view)
+        setUpSpinners(view)
 
-        spColor = view.findViewById(R.id.spColor)
         btnRegister = view.findViewById(R.id.btnRegister)
         tvLogin = view.findViewById(R.id.tvLogin)
     }
@@ -97,10 +103,9 @@ class RegisterFragment : Fragment() {
             override fun failure(message: String) {
                 Toast.makeText(view.context, message, Toast.LENGTH_SHORT).show()
             }
-
         }
 
-        tvLogin.setOnClickListener(View.OnClickListener {
+        tvLogin.setOnClickListener({
             Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_loginFragment)
         })
 
@@ -108,53 +113,10 @@ class RegisterFragment : Fragment() {
             mViewModel?.registerUser(email = etEmail.text.toString().trim(),
                 username = etUsername.text.toString().trim(),
                 password = etPassword.text.toString().trim(),
-                topic = "",
-                themeColor = "",
+                topic = chosenTopic,
+                themeColor = chosenTheme,
                 f = myObject)
             // Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registerFragment)
         })
-    }
-
-    // Sign up account
-    fun createAccount(email: String?, password: String?) {
-        mAuth!!.createUserWithEmailAndPassword(email!!, password!!)
-            .addOnCompleteListener((this as Executor)) { task: Task<AuthResult?> ->
-                if (task.isSuccessful) {
-                    // Sign in success
-                    Log.d(ContentValues.TAG, "createUserWithEmail:success")
-                    val user = mAuth!!.currentUser
-                    // updateUI(user);
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(ContentValues.TAG, "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(
-                        context, "Authentication failed.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    // updateUI(null);
-                }
-            }
-    }
-
-    // Example Db usage: add user to collection
-    var db = FirebaseFirestore.getInstance()
-    fun addAccount(user: Any?) {
-
-        // Add a new document with a generated ID
-        db.collection("users")
-            .add(user!!)
-            .addOnSuccessListener { documentReference ->
-                Log.d(
-                    ContentValues.TAG,
-                    "DocumentSnapshot added with ID: " + documentReference.id
-                )
-            }
-            .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error adding document", e) }
-    }
-
-    companion object {
-        fun newInstance(): RegisterFragment {
-            return RegisterFragment()
-        }
     }
 }

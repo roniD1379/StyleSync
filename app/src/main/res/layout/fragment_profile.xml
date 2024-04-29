@@ -15,7 +15,7 @@
         />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fbtnEditProfile"
+        android:id="@+id/fBtnEditProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/baseline_architecture_24"
@@ -38,7 +38,7 @@
             <ImageView
                 android:id="@+id/ivProfileImage"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="250dp"
                 android:src="@drawable/user"
                 android:layout_gravity="center"
                 />
@@ -52,6 +52,15 @@
                 android:textSize="22dp"
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center"/>
+
+            <Button
+                android:id="@+id/btnSignOut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="sign out"
+                android:layout_margin="5dp"
+                android:layout_gravity="center"
+                />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
