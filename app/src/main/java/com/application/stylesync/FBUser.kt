@@ -5,7 +5,7 @@ data class FBUser (
     var uri: String,
     var email: String,
     var username: String,
-    var topic: String,
-    var themeColor: String
+    var style: String,
+    var color: String
 ) {
 }

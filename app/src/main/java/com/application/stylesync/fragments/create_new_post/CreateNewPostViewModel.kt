@@ -11,7 +11,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.util.UUID
 
-
 class CreateNewPostViewModel : ViewModel() {
     private fun createNewPost(content: String, imageUri: String, topic: String, color: String, callback: () -> Unit) {
         val userId = FirebaseAuth.getInstance().currentUser!!.uid

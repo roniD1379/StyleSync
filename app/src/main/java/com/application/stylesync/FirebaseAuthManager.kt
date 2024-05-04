@@ -18,8 +18,8 @@ class FirebaseAuthManager {
         var uri: String = ""
         var email: String = ""
         var username: String = ""
-        var topic: String = ""
-        var themeColor: String = ""
+        var style: String = ""
+        var color: String = ""
     }
 
     fun signOut() {
@@ -28,9 +28,11 @@ class FirebaseAuthManager {
         CURRENT_USER.uri = ""
         CURRENT_USER.email = ""
         CURRENT_USER.username = ""
-        CURRENT_USER.topic = ""
-        CURRENT_USER.themeColor = ""
+        CURRENT_USER.style = ""
+        CURRENT_USER.color = ""
     }
+
+    // Edit profile without image
     fun updateCurrentUser(f: FirebaseAuthManagerInterface) {
         usersCollection
             .document(CURRENT_USER.uid)
@@ -39,6 +41,7 @@ class FirebaseAuthManager {
             .addOnSuccessListener { f.success() }
     }
 
+    // Edit profile with image
     fun updateCurrentUserWithImage(uri: Uri, f: FirebaseAuthManagerInterface) {
         val storageReference = FirebaseStorage.getInstance()
             .getReference(USERS_REF + "/" + CURRENT_USER.uid)
@@ -59,8 +62,8 @@ class FirebaseAuthManager {
         email: String,
         username: String,
         password: String,
-        topic: String,
-        themeColor: String,
+        style: String,
+        color: String,
         f: FirebaseAuthManagerInterface
     ) {
         Firebase.auth
@@ -71,8 +74,8 @@ class FirebaseAuthManager {
                     CURRENT_USER.uri = ""
                     CURRENT_USER.email = email
                     CURRENT_USER.username = username
-                    CURRENT_USER.topic = topic
-                    CURRENT_USER.themeColor = themeColor
+                    CURRENT_USER.style = style
+                    CURRENT_USER.color = color
                     registerUserOnFirestore(f)
                 }
             }.addOnFailureListener {
@@ -109,8 +112,8 @@ class FirebaseAuthManager {
                         CURRENT_USER.uri = CURRENT_USER.uri
                         CURRENT_USER.email = CURRENT_USER.email
                         CURRENT_USER.username = CURRENT_USER.username
-                        CURRENT_USER.topic = CURRENT_USER.topic
-                        CURRENT_USER.themeColor = CURRENT_USER.themeColor
+                        CURRENT_USER.style = CURRENT_USER.style
+                        CURRENT_USER.color = CURRENT_USER.color
                         f.success()
                     }
                 }

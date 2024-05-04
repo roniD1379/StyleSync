@@ -11,7 +11,7 @@ class LoginViewModel : ViewModel() {
     ) {
         if (email.trim().isEmpty() ||
             password.trim().isEmpty()) {
-            f.failure("Enter all data!")
+            f.failure("Please fill all the required fields")
         } else {
             FirebaseAuthManager().loginUser(email, password, f)
         }
