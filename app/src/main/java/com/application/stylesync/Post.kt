@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 data class Post(
     var content: String,
     var imageUri: String,
-    var topic: String,
+    var style: String,
     var color: String,
     var userId: String,
     var id: String
@@ -17,7 +17,7 @@ data class Post(
 data class PostParcelable(
     val content: String,
     val imageUri: String,
-    val topic: String,
+    val style: String,
     val color: String,
     val userId: String,
     val id: String
@@ -25,7 +25,7 @@ data class PostParcelable(
     constructor(post: Post) : this(
         post.content,
         post.imageUri,
-        post.topic,
+        post.style,
         post.color,
         post.userId,
         post.id

@@ -9,13 +9,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.application.stylesync.Adapter.OnPostClickListener
 import com.application.stylesync.Adapter.PostsRecyclerAdapter
-import com.application.stylesync.R
 import com.application.stylesync.Post
+import com.application.stylesync.R
 
 class HomeFragment : Fragment() {
     private lateinit var mViewModel: HomeViewModel
@@ -29,24 +28,15 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-        // TODO for Dekel  - insert them under findAllViewsById function
-        postsRecyclerView = view?.findViewById(R.id.posts_recycler_view)
-        postsRecyclerView?.layoutManager = LinearLayoutManager(context)
+        val view: View = inflater.inflate(R.layout.fragment_home, container, false)
+        findAllViewsById(view)
+        setAllOnClicks(view)
 
+        mViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         mViewModel.setPosts() {
             setAdapter()
         }
 
-        val view: View = inflater.inflate(R.layout.fragment_home, container, false)
-        val button = view.findViewById<View>(R.id.ibCreatePost)
-        // TODO for Dekel  - insert them under setAllOnClicks function
-        button.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_createNewPostFragment)
-        }
-
-        findAllViewsById(view)
-        setAllOnClicks(view)
         return view
     }
 
@@ -55,18 +45,13 @@ class HomeFragment : Fragment() {
         postsRecyclerView = view?.findViewById(R.id.posts_recycler_view)
         postsRecyclerView?.adapter = adapter
         postsRecyclerView?.layoutManager = LinearLayoutManager(context)
-        adapter?.listener = object : OnPostClickListener {
-            override fun onPostClicked(post: Post?) {
-                if (post != null) {
-                    Toast.makeText(context, "Post ${post.userId} clicked", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
     }
 
     private fun findAllViewsById(view: View) {
         ibProfile = view.findViewById(R.id.ibProfile)
         ibCreatePost = view.findViewById(R.id.ibCreatePost)
+        postsRecyclerView = view.findViewById(R.id.posts_recycler_view)
+        postsRecyclerView?.layoutManager = LinearLayoutManager(context)
     }
 
     private fun setAllOnClicks(view: View) {

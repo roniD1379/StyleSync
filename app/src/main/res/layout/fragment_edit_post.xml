@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="13dp"
-                android:text="Topic" />
+                android:text="Style" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -47,7 +47,7 @@
                 app:cardCornerRadius="4dp">
 
                 <androidx.appcompat.widget.AppCompatSpinner
-                    android:id="@+id/spTopic"
+                    android:id="@+id/spStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="20dp" />
@@ -58,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="13dp"
-                android:text="Theme Color" />
+                android:text="Color" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"

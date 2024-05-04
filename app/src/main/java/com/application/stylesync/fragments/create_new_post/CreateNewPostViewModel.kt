@@ -12,20 +12,20 @@ import com.google.firebase.storage.StorageReference
 import java.util.UUID
 
 class CreateNewPostViewModel : ViewModel() {
-    private fun createNewPost(content: String, imageUri: String, topic: String, color: String, callback: () -> Unit) {
+    private fun createNewPost(content: String, imageUri: String, style: String, color: String, callback: () -> Unit) {
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
         val id = UUID.randomUUID().toString()
-        val post = Post(content, imageUri, topic, color, userId, id)
+        val post = Post(content, imageUri, style, color, userId, id)
         FirestoreManager().addNewPost(post)
         callback()
     }
 
-    fun uploadPost(file: Uri, content: String,topic: String, color: String, callback: () -> Unit) {
+    fun uploadPost(file: Uri, content: String, style: String, color: String, callback: () -> Unit) {
         val storageReference = FirebaseStorage.getInstance().reference
         val ref: StorageReference = storageReference.child("images/" + UUID.randomUUID().toString())
         ref.putFile(file).addOnSuccessListener {
             it.storage.downloadUrl.addOnSuccessListener { uri ->
-                createNewPost(content, uri.toString(), topic, color, callback)
+                createNewPost(content, uri.toString(), style, color, callback)
             }
         }.addOnFailureListener { e ->
             Toast.makeText(MainActivity(), "Failed " + e.message, Toast.LENGTH_SHORT).show()

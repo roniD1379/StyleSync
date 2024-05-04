@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.application.stylesync.Adapter.OnPostClickListener
@@ -30,9 +29,7 @@ class ProfileFragment : Fragment() {
     private lateinit var tvUsername: TextView
     private lateinit var btnSignOut: Button
     private lateinit var ibHome: ImageButton
-    private lateinit var ibCreatePost : ImageButton
-    private lateinit var btnHome: Button
-    private lateinit var btnCreateNewPost: Button
+    private lateinit var ibCreateNewPost: ImageButton
     private var adapter: PostsRecyclerAdapter? = null
     private var postsRecyclerView: RecyclerView? = null
 
@@ -60,10 +57,8 @@ class ProfileFragment : Fragment() {
         ivProfileImage = view.findViewById(R.id.ivProfileImage)
         tvUsername = view.findViewById(R.id.tvUsername)
         btnSignOut = view.findViewById(R.id.btnSignOut)
-        btnHome = view.findViewById(R.id.ibHome)
-        btnCreateNewPost = view.findViewById(R.id.ibCreatePost)
         ibHome = view.findViewById(R.id.ibHome)
-        ibCreatePost = view.findViewById(R.id.ibCreatePost)
+        ibCreateNewPost = view.findViewById(R.id.ibCreatePost)
 
         // Load user's image
         if (FirebaseAuthManager.CURRENT_USER.uri.isNotEmpty()) {
@@ -83,19 +78,11 @@ class ProfileFragment : Fragment() {
             Navigation.findNavController(view)
                 .navigate(R.id.action_profileFragment_to_loginFragment)
         }
-        btnHome.setOnClickListener {
-            Navigation.findNavController(view)
-                .navigate(R.id.action_profileFragment_to_homeFragment)
-        }
-        btnCreateNewPost.setOnClickListener {
-            Navigation.findNavController(view)
-                .navigate(R.id.action_profileFragment_to_createNewPostFragment)
-        }
         ibHome.setOnClickListener {
             Navigation.findNavController(view)
                 .navigate(R.id.action_profileFragment_to_homeFragment)
         }
-        ibCreatePost.setOnClickListener {
+        ibCreateNewPost.setOnClickListener {
             Navigation.findNavController(view)
                 .navigate(R.id.action_profileFragment_to_createNewPostFragment)
         }

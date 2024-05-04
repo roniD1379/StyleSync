@@ -12,7 +12,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Spinner
@@ -32,24 +31,19 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.Arrays
-
 
 class CreateNewPostFragment : Fragment() {
     private lateinit var mViewModel: CreateNewPostViewModel
-
-    private var descriptionTextView: EditText? = null
-    private var uploadButton: Button? = null
-    private var cancelButton: Button? = null
-    private var imageUpload: ImageView? = null
-    private var imageUri: Uri = Uri.EMPTY;
-    private var progressBar: ProgressBar? = null
-    private lateinit var ibHome: ImageButton
-    private lateinit var ibProfile : ImageButton
+    private lateinit var descriptionTextView: EditText
+    private lateinit var uploadButton: Button
+    private lateinit var cancelButton: Button
+    private lateinit var imageUpload: ImageView
     private lateinit var spStyle: Spinner
     private lateinit var spColor: Spinner
     private lateinit var colorAdapter: ArrayAdapter<String>;
     private lateinit var styleAdapter: ArrayAdapter<String>;
+    private lateinit var progressBar: ProgressBar
+    private var imageUri: Uri = Uri.EMPTY;
 
     // Spinners
     private var styleOptions = arrayOf("Classic", "Casual", "Elegant", "Vintage", "Athleisure", "Bohemian", "Preppy", "Gothic", "Streetwear", "Minimalist")
@@ -79,48 +73,10 @@ class CreateNewPostFragment : Fragment() {
         return view
     }
 
-
     private fun setupUi(view: View) {
-        // what is the purpose of the function?
-        
-        // TODO for Dekel  - insert them under findAllViewsById function
-        descriptionTextView = view.findViewById(R.id.etDescription)
-        uploadButton = view.findViewById(R.id.btnUpload)
-        cancelButton = view.findViewById(R.id.btnCancel)
-        progressBar = view.findViewById(R.id.progressBar)
-        imageUpload = view.findViewById(R.id.uploadImage)
+        findAllViewsById(view)
         setUpSpinners(view)
-        
-        // TODO for Dekel  - insert them under setAllOnClicks function
-        imageUpload?.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.setType("image/*")
-            activityResultLauncher.launch(intent)
-        }
-        
-        uploadButton?.setOnClickListener {
-            spStyle.selectedItem.toString()
-            if (imageUri == Uri.EMPTY) {
-                Toast.makeText(context, "Please select an image", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            progressBar?.visibility = VISIBLE
-            mViewModel?.uploadPost(
-                imageUri,
-                descriptionTextView?.text.toString(),
-                spStyle.selectedItem.toString(),
-                spColor.selectedItem.toString()
-            ) {
-                progressBar?.visibility = View.GONE
-                Navigation.findNavController(view).navigate(R.id.homeFragment)
-            }
-        }
-
-        cancelButton?.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.homeFragment)
-        }
-        
+        setAllOnClicks(view)
     }
 
     private fun setUpSpinners(view: View) {
@@ -149,18 +105,16 @@ class CreateNewPostFragment : Fragment() {
             }
         }
 
-
         setUpColorSpinnerValues()
     }
 
-    private fun setUpColorSpinnerValues()
-    {
+    private fun setUpColorSpinnerValues() {
         call.enqueue(object : Callback<ApiResponse> {
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                 if (response.isSuccessful) {
-                    var apiResponse = response.body()
-                    var colors = apiResponse!!.colors.map { it.name } // Extracting the colors list
-                    var arrayList: ArrayList<String> = ArrayList(colors)
+                    val apiResponse = response.body()
+                    val colors = apiResponse!!.colors.map { it.name } // Extracting the colors list
+                    val arrayList: ArrayList<String> = ArrayList(colors)
                     colorAdapter.clear();
                     colorAdapter.addAll(arrayList);
                     chosenColor = arrayList[0]
@@ -173,33 +127,57 @@ class CreateNewPostFragment : Fragment() {
     }
 
     private fun findAllViewsById(view: View) {
-        ibProfile = view.findViewById(R.id.ibProfile)
-        ibHome = view.findViewById(R.id.ibHome)
+        descriptionTextView = view.findViewById(R.id.etDescription)
+        uploadButton = view.findViewById(R.id.btnUpload)
+        cancelButton = view.findViewById(R.id.btnCancel)
+        progressBar = view.findViewById(R.id.progressBar)
+        imageUpload = view.findViewById(R.id.uploadImage)
     }
 
     private fun setAllOnClicks(view: View) {
-        ibHome.setOnClickListener {
-            Navigation.findNavController(view)
-                .navigate(R.id.action_createNewPostFragment_to_homeFragment)
+        imageUpload.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.setType("image/*")
+            activityResultLauncher.launch(intent)
         }
-        ibProfile.setOnClickListener {
-            Navigation.findNavController(view)
-                .navigate(R.id.action_createNewPostFragment_to_profileFragment)
+
+        uploadButton.setOnClickListener {
+            spStyle.selectedItem.toString()
+            if (imageUri == Uri.EMPTY) {
+                Toast.makeText(context, "Please select an image", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            progressBar.visibility = VISIBLE
+            mViewModel.uploadPost(
+                imageUri,
+                descriptionTextView.text.toString(),
+                spStyle.selectedItem.toString(),
+                spColor.selectedItem.toString()
+            ) {
+                progressBar.visibility = View.GONE
+                Navigation.findNavController(view).navigate(R.id.homeFragment)
+            }
+        }
+
+        cancelButton.setOnClickListener {
+            Navigation.findNavController(view).navigate(R.id.homeFragment)
         }
     }
 
     
     
-    // TODO for Dekel  - add note for function purpose
+    // load image from gallery
     private val activityResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == RESULT_OK) {
                 if (result.data != null) {
-                    uploadButton?.isEnabled = true
+                    uploadButton.isEnabled = true
                     imageUri = result.data?.data!!
-                    Picasso.get().load(imageUri).into(imageUpload)                }
+                    Picasso.get().load(imageUri).into(imageUpload)
+                }
             } else {
                 Toast.makeText(MainActivity(), "Please select an image", Toast.LENGTH_SHORT).show()
             }
