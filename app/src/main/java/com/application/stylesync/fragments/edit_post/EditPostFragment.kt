@@ -1,14 +1,12 @@
-package com.application.stylesync.fragments.create_new_post
+package com.application.stylesync.fragments.edit_post
 
-import android.app.Activity.RESULT_OK
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -21,9 +19,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.navArgs
 import com.application.stylesync.ApiResponse
 import com.application.stylesync.ApiService
 import com.application.stylesync.MainActivity
+import com.application.stylesync.Post
+import com.application.stylesync.PostParcelable
 import com.application.stylesync.R
 import com.squareup.picasso.Picasso
 import retrofit2.Call
@@ -32,24 +33,26 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class CreateNewPostFragment : Fragment() {
-    private lateinit var mViewModel: CreateNewPostViewModel
+class EditPostFragment : Fragment() {
+
     private lateinit var descriptionTextView: EditText
-    private lateinit var uploadButton: Button
+    private lateinit var updateButton: Button
     private lateinit var cancelButton: Button
+    private lateinit var deleteButton: Button
     private lateinit var imageUpload: ImageView
+    private lateinit var progressBar: ProgressBar
     private lateinit var spStyle: Spinner
     private lateinit var spColor: Spinner
-    private lateinit var colorAdapter: ArrayAdapter<String>;
-    private lateinit var styleAdapter: ArrayAdapter<String>;
-    private lateinit var progressBar: ProgressBar
-    private var imageUri: Uri = Uri.EMPTY;
+    private lateinit var viewModel: EditPostViewModel
+    private lateinit var colorAdapter: ArrayAdapter<String>
+    private lateinit var styleAdapter: ArrayAdapter<String>
+
+    private var imageUri: Uri = Uri.EMPTY
+    private val args: EditPostFragmentArgs by navArgs()
 
     // Spinners
     private var styleOptions = arrayOf("Classic", "Casual", "Elegant", "Vintage", "Athleisure", "Bohemian", "Preppy", "Gothic", "Streetwear", "Minimalist")
     private var colorOptions = ArrayList(listOf<String>())
-    private var chosenStyle: String = styleOptions[0]
-    private var chosenColor: String = ""
 
     // Rest API
     private val retrofit = Retrofit.Builder()
@@ -59,56 +62,100 @@ class CreateNewPostFragment : Fragment() {
     private val apiService = retrofit.create(ApiService::class.java)
     private val call = apiService.getColors()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        mViewModel = ViewModelProvider(this).get(CreateNewPostViewModel::class.java)
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_create_new_post, container, false)
+        val view = inflater.inflate(R.layout.fragment_edit_post, container, false)
+        viewModel = ViewModelProvider(this).get(EditPostViewModel::class.java)
         setupUi(view)
         return view
     }
 
     private fun setupUi(view: View) {
-        findAllViewsById(view)
+        val post = args.selectedPost
+
         setUpSpinners(view)
-        setAllOnClicks(view)
+        findAllViewsById(view)
+        setAllOnClicks(view, post)
+
+        descriptionTextView.setText(post.content)
+        Picasso.get().load(post.imageUri).into(imageUpload)
+    }
+
+    private fun findAllViewsById(view: View) {
+        descriptionTextView = view.findViewById(R.id.etDescription)
+        updateButton = view.findViewById(R.id.btnUpdate)
+        cancelButton = view.findViewById(R.id.btnCancel)
+        deleteButton = view.findViewById(R.id.btnDelete)
+        imageUpload = view.findViewById(R.id.uploadImage)
+        progressBar = view.findViewById(R.id.progressBar)
+    }
+
+    private fun setAllOnClicks(view: View, post: PostParcelable) {
+        imageUpload.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.setType("image/*")
+            activityResultLauncher.launch(intent)
+        }
+
+        updateButton.setOnClickListener {
+            spStyle.selectedItem.toString()
+
+            progressBar.visibility = View.VISIBLE
+            val newPost = Post(
+                descriptionTextView.text.toString(),
+                post.imageUri,
+                spStyle.selectedItem.toString(),
+                spColor.selectedItem.toString(),
+                post.userId,
+                post.id)
+
+            viewModel.updatePost(
+                imageUri,
+                newPost
+            ) {
+                progressBar.visibility = View.GONE
+                Toast.makeText(context, "Post updated", Toast.LENGTH_SHORT).show()
+                Navigation.findNavController(view).navigate(R.id.profileFragment)
+            }
+        }
+
+        cancelButton.setOnClickListener {
+            Navigation.findNavController(view).navigate(R.id.profileFragment)
+        }
+
+        deleteButton.setOnClickListener {
+            viewModel.deletePost(post.id) {
+                Toast.makeText(context, "Post deleted", Toast.LENGTH_SHORT).show()
+                Navigation.findNavController(view).navigate(R.id.profileFragment)
+            }
+        }
     }
 
     private fun setUpSpinners(view: View) {
+        val post = args.selectedPost
         spStyle = view.findViewById(R.id.spStyle)
         spColor = view.findViewById(R.id.spColor)
+
         styleAdapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, styleOptions)
         colorAdapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, colorOptions)
         colorAdapter.setNotifyOnChange(true);
 
         // Apply the adapters to the spinners
         spColor.adapter = colorAdapter
-        spColor.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                chosenColor = parent.getItemAtPosition(position).toString()
-            }
-            override fun onNothingSelected(parent: AdapterView<*>) {
-            }
-        }
-
         spStyle.adapter = styleAdapter
-        spStyle.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                chosenStyle = parent.getItemAtPosition(position).toString()
-            }
-            override fun onNothingSelected(parent: AdapterView<*>) {
-            }
-        }
+        spStyle.setSelection(styleOptions.indexOf(post.style))
 
-        setUpColorSpinnerValues()
+        setUpColorSpinnerValues(post.color)
+
+    }
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(EditPostViewModel::class.java)
     }
 
-    private fun setUpColorSpinnerValues() {
+    private fun setUpColorSpinnerValues(defaultColor: String) {
         call.enqueue(object : Callback<ApiResponse> {
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                 if (response.isSuccessful) {
@@ -117,7 +164,7 @@ class CreateNewPostFragment : Fragment() {
                     val arrayList: ArrayList<String> = ArrayList(colors)
                     colorAdapter.clear();
                     colorAdapter.addAll(arrayList);
-                    chosenColor = arrayList[0]
+                    spColor.setSelection(colorOptions.indexOf(defaultColor))
                 }
             }
             override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
@@ -126,58 +173,15 @@ class CreateNewPostFragment : Fragment() {
         })
     }
 
-    private fun findAllViewsById(view: View) {
-        descriptionTextView = view.findViewById(R.id.etDescription)
-        uploadButton = view.findViewById(R.id.btnUpload)
-        cancelButton = view.findViewById(R.id.btnCancel)
-        progressBar = view.findViewById(R.id.progressBar)
-        imageUpload = view.findViewById(R.id.uploadImage)
-    }
-
-    private fun setAllOnClicks(view: View) {
-        imageUpload.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.setType("image/*")
-            activityResultLauncher.launch(intent)
-        }
-
-        uploadButton.setOnClickListener {
-            spStyle.selectedItem.toString()
-            if (imageUri == Uri.EMPTY) {
-                Toast.makeText(context, "Please select an image", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            progressBar.visibility = VISIBLE
-            mViewModel.uploadPost(
-                imageUri,
-                descriptionTextView.text.toString(),
-                spStyle.selectedItem.toString(),
-                spColor.selectedItem.toString()
-            ) {
-                progressBar.visibility = View.GONE
-                Navigation.findNavController(view).navigate(R.id.homeFragment)
-            }
-        }
-
-        cancelButton.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.homeFragment)
-        }
-    }
-
-    
-    
     // load image from gallery
     private val activityResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            if (result.resultCode == RESULT_OK) {
+            ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
                 if (result.data != null) {
-                    uploadButton.isEnabled = true
+                    updateButton.isEnabled = true
                     imageUri = result.data?.data!!
-                    Picasso.get().load(imageUri).into(imageUpload)
-                }
+                    Picasso.get().load(imageUri).into(imageUpload)                }
             } else {
                 Toast.makeText(MainActivity(), "Please select an image", Toast.LENGTH_SHORT).show()
             }

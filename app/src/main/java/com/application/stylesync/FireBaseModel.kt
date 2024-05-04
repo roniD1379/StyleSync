@@ -1,8 +1,7 @@
 package com.application.stylesync.Model
 
-import com.example.myapp.firestore.Post
+import com.application.stylesync.Post
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.tasks.await
 
 class FirestoreManager {
 
@@ -17,8 +16,8 @@ class FirestoreManager {
                 val content = document.getString("content") ?: ""
                 val userId = document.getString("userId") ?: ""
                 val color = document.getString("color") ?: ""
-                val topic = document.getString("topic") ?: ""
-                Post(content, imageUri, topic, color, userId)
+                val style = document.getString("style") ?: ""
+                Post(content, imageUri, style, color, userId, id)
             }
             callback(posts)
         }
@@ -40,24 +39,25 @@ class FirestoreManager {
         }
     }
 
-    fun updatePost(postId: String, newPost: Post) {
-        postsCollection.document(postId).set(newPost).addOnSuccessListener {
+    fun updatePost(post: Post) {
+        postsCollection.document(post.id).set(post).addOnSuccessListener {
             println("DocumentSnapshot successfully written!")
         }.addOnFailureListener { e ->
             println("Error writing document: $e")
         }
     }
 
-    suspend fun getPostsOfUser(userId: String): List<Post> {
-        val querySnapshot = postsCollection.whereEqualTo("userId", userId).get().await()
-        return querySnapshot.documents.map { document ->
-            val id = document.id
-            val imageUri = document.getString("imageUri") ?: ""
-            val content = document.getString("content") ?: ""
-            val color = document.getString("color") ?: ""
-            val topic = document.getString("topic") ?: ""
-            val userId = document.getString("userId") ?: ""
-            Post(content, imageUri, topic, color, userId)
+    fun getPostsOfUser(userId: String, callback: (List<Post>) -> Unit) {
+        postsCollection.whereEqualTo("userId", userId).get().addOnSuccessListener {
+            val posts = it.documents.map { document ->
+                val id = document.id
+                val imageUri = document.getString("imageUri") ?: ""
+                val content = document.getString("content") ?: ""
+                val color = document.getString("color") ?: ""
+                val topic = document.getString("topic") ?: ""
+                Post(content, imageUri, topic, color, userId, id)
+            }
+            callback(posts)
         }
     }
 }

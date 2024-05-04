@@ -54,12 +54,18 @@
                 />
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvPosts"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvUser_Posts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/nav_bar_height"
-            tools:listitem="@layout/post_tile"/>
+            tools:listitem="@layout/post_layout_row"/>
+
+        </ScrollView>
 
     </LinearLayout>
 

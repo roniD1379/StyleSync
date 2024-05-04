@@ -11,20 +11,27 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.application.stylesync.Adapter.OnPostClickListener
+import com.application.stylesync.Adapter.PostsRecyclerAdapter
 import com.application.stylesync.FirebaseAuthManager
 import com.application.stylesync.R
+import com.application.stylesync.Post
+import com.application.stylesync.PostParcelable
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Picasso
 
 class ProfileFragment : Fragment() {
-    private lateinit var mViewModel: ProfileViewModel
-
+    private lateinit var viewModel: ProfileViewModel
     private lateinit var fBtnEditProfile: FloatingActionButton
     private lateinit var ivProfileImage: ImageView
     private lateinit var tvUsername: TextView
     private lateinit var btnSignOut: Button
     private lateinit var ibHome: ImageButton
-    private lateinit var ibCreatePost : ImageButton
+    private lateinit var ibCreateNewPost: ImageButton
+    private var adapter: PostsRecyclerAdapter? = null
+    private var postsRecyclerView: RecyclerView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,12 +40,16 @@ class ProfileFragment : Fragment() {
         val view: View = inflater.inflate(R.layout.fragment_profile, container, false)
         findAllViewsById(view)
         setAllOnClicks(view)
+        viewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+        viewModel.setPosts() {
+            setAdapter(view)
+        }
         return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        mViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
     }
 
     private fun findAllViewsById(view: View) {
@@ -47,10 +58,10 @@ class ProfileFragment : Fragment() {
         tvUsername = view.findViewById(R.id.tvUsername)
         btnSignOut = view.findViewById(R.id.btnSignOut)
         ibHome = view.findViewById(R.id.ibHome)
-        ibCreatePost = view.findViewById(R.id.ibCreatePost)
+        ibCreateNewPost = view.findViewById(R.id.ibCreatePost)
 
         // Load user's image
-        if (!FirebaseAuthManager.CURRENT_USER.uri.isEmpty()) {
+        if (FirebaseAuthManager.CURRENT_USER.uri.isNotEmpty()) {
             Picasso.get().load(FirebaseAuthManager.CURRENT_USER.uri).into(ivProfileImage)
         }
         tvUsername.text = FirebaseAuthManager.CURRENT_USER.username
@@ -62,18 +73,33 @@ class ProfileFragment : Fragment() {
             Navigation.findNavController(view)
                 .navigate(R.id.action_profileFragment_to_editProfileFragment)
         }
-        btnSignOut.setOnClickListener({
+        btnSignOut.setOnClickListener {
             FirebaseAuthManager().signOut()
             Navigation.findNavController(view)
                 .navigate(R.id.action_profileFragment_to_loginFragment)
-        })
+        }
         ibHome.setOnClickListener {
             Navigation.findNavController(view)
                 .navigate(R.id.action_profileFragment_to_homeFragment)
         }
-        ibCreatePost.setOnClickListener {
+        ibCreateNewPost.setOnClickListener {
             Navigation.findNavController(view)
                 .navigate(R.id.action_profileFragment_to_createNewPostFragment)
+        }
+    }
+
+    private fun setAdapter(view: View) {
+        adapter = PostsRecyclerAdapter(viewModel.posts)
+        postsRecyclerView = view.findViewById(R.id.rvUser_Posts)
+        postsRecyclerView?.adapter = adapter
+        postsRecyclerView?.layoutManager = LinearLayoutManager(context)
+        adapter?.listener = object : OnPostClickListener {
+
+            override fun onPostClicked(post: Post?) {
+                val parcelablePost = PostParcelable(post!!)
+                val action = ProfileFragmentDirections.actionProfileFragmentToEditPostFragment(parcelablePost)
+                Navigation.findNavController(view).navigate(action)
+            }
         }
     }
 }

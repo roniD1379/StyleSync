@@ -2,7 +2,7 @@ package com.application.stylesync.fragments.home
 
 import androidx.lifecycle.ViewModel
 import com.application.stylesync.Model.FirestoreManager
-import com.example.myapp.firestore.Post
+import com.application.stylesync.Post
 
 class HomeViewModel : ViewModel() {
 
