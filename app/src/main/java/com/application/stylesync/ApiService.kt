@@ -3,6 +3,6 @@ import retrofit2.Call
 import retrofit2.http.GET
 
 interface ApiService {
-    @GET("spinner_values")
-    fun getSpinnerValues(): Call<List<SpinnerValue>>
+    @GET("colors")
+    fun getColors(): Call<ApiResponse>
 }

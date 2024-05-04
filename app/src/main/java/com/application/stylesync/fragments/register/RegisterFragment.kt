@@ -1,5 +1,6 @@
 package com.application.stylesync.fragments.register
 
+import android.R.array
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +15,19 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import com.application.stylesync.ApiResponse
+import com.application.stylesync.ApiService
 import com.application.stylesync.FirebaseAuthManagerInterface
 import com.application.stylesync.R
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.runBlocking
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.Arrays
+
 
 class RegisterFragment : Fragment() {
     private var mViewModel: RegisterViewModel? = null
@@ -29,22 +40,73 @@ class RegisterFragment : Fragment() {
     private lateinit var spColor: Spinner
     private lateinit var btnRegister: Button
     private lateinit var tvLogin: TextView;
+    private lateinit var themeAdapter: ArrayAdapter<String>;
+    private lateinit var topicAdapter: ArrayAdapter<String>;
+
 
     private var chosenTopic: String = "A" // todo: change to the first option
     private var chosenTheme: String = "A" // todo: change to the first option
 
-    val topicOptions = arrayOf("A", "B", "C")
-    val themeOptions = arrayOf("A", "B", "C")
+//    val topicOptions = arrayOf("A", "B", "C")
+    val themeOptions = ArrayList(Arrays.asList<String>("A", "B", "C"));
+
+    //private var topicOptionsList = listOf<String>()
+    var topicOptions = ArrayList(Arrays.asList<String>());
+   // private lateinit var themeOptions: Array<String>
+
+    val retrofit = Retrofit.Builder()
+        .baseUrl("https://www.csscolorsapi.com/api/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    val apiService = retrofit.create(ApiService::class.java)
+
+    val call = apiService.getColors()
+
+    private fun setUpSpinnersValues()
+    {
+        call.enqueue(object : Callback<ApiResponse> {
+            override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+                if (response.isSuccessful) {
+                    runBlocking {
+                        val apiResponse = response.body()
+                        //println(apiResponse)
+                        var response = apiResponse!!.colors.map { it.name } // Extracting the colors list
+                        //                    println(topicOptions
+                        //val adapter = spinner.adapter as ArrayAdapter<String>
+
+                        val arrayList: ArrayList<String> = ArrayList(response)
+                        //topicOptions = arrayList
+                        //topicAdapter = ArrayAdapter<String>(view.context, android.R.layout.simple_spinner_dropdown_item, topicOptions)
+
+                        println(response)
+                        topicAdapter.clear();
+                        topicAdapter.addAll(arrayList);
+                        //themeAdapter.addAll(response)
+
+                    }
+                } else {
+                    // Handle error
+                }
+            }
+
+            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                // Handle failure
+            }
+        })
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Initialize Firebase Auth
+
         mAuth = FirebaseAuth.getInstance()
         val view = inflater.inflate(R.layout.fragment_register, container, false)
         findAllViewsById(view)
         setAllOnClicks(view)
+        setUpSpinnersValues()
         return view
     }
 
@@ -58,13 +120,15 @@ class RegisterFragment : Fragment() {
         spTopic = view.findViewById(R.id.spTopic)
         spColor = view.findViewById(R.id.spColor)
 
-        val topicAdapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, topicOptions)
-        val themeAdapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, themeOptions)
+        themeAdapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, themeOptions)
+        topicAdapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, topicOptions)
 
+        topicAdapter.setNotifyOnChange(true);
         // Apply the adapter to the spinner
         spTopic.adapter = topicAdapter
         spTopic.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+
                 chosenTopic = parent.getItemAtPosition(position).toString()
             }
 
@@ -76,11 +140,13 @@ class RegisterFragment : Fragment() {
         spColor.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 chosenTheme = parent.getItemAtPosition(position).toString()
+                //chosenTheme = parent.getItemAtPosition(position).toString()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
             }
         }
+
     }
 
     private fun findAllViewsById(view: View) {
