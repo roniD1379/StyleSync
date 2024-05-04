@@ -8,6 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.application.stylesync.R
 
 class HomeFragment : Fragment() {
@@ -20,6 +23,10 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view: View = inflater.inflate(R.layout.fragment_home, container, false)
+        val button = view.findViewById<View>(R.id.ibCreatePost)
+        button.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_createNewPostFragment)
+        }
         findAllViewsById(view)
         setAllOnClicks(view)
         return view
