@@ -18,25 +18,29 @@ import com.application.stylesync.R
 import com.application.stylesync.Post
 
 class HomeFragment : Fragment() {
-
-    private lateinit var viewModel: HomeViewModel
-    private lateinit var ibProfile: ImageButton
+    private lateinit var mViewModel: HomeViewModel
+    
     private var adapter: PostsRecyclerAdapter? = null
     private var postsRecyclerView: RecyclerView? = null
+    private lateinit var ibProfile: ImageButton
+    private lateinit var ibCreatePost : ImageButton
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        mViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        // TODO for Dekel  - insert them under findAllViewsById function
         postsRecyclerView = view?.findViewById(R.id.posts_recycler_view)
         postsRecyclerView?.layoutManager = LinearLayoutManager(context)
 
-        viewModel.setPosts() {
+        mViewModel.setPosts() {
             setAdapter()
         }
 
         val view: View = inflater.inflate(R.layout.fragment_home, container, false)
         val button = view.findViewById<View>(R.id.ibCreatePost)
+        // TODO for Dekel  - insert them under setAllOnClicks function
         button.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_createNewPostFragment)
         }
@@ -47,7 +51,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setAdapter() {
-        adapter = PostsRecyclerAdapter(viewModel.posts)
+        adapter = PostsRecyclerAdapter(mViewModel.posts)
         postsRecyclerView = view?.findViewById(R.id.posts_recycler_view)
         postsRecyclerView?.adapter = adapter
         postsRecyclerView?.layoutManager = LinearLayoutManager(context)
@@ -62,12 +66,17 @@ class HomeFragment : Fragment() {
 
     private fun findAllViewsById(view: View) {
         ibProfile = view.findViewById(R.id.ibProfile)
+        ibCreatePost = view.findViewById(R.id.ibCreatePost)
     }
 
     private fun setAllOnClicks(view: View) {
         ibProfile.setOnClickListener {
             Navigation.findNavController(view)
                 .navigate(R.id.action_homeFragment_to_profileFragment)
+        }
+        ibCreatePost.setOnClickListener {
+            Navigation.findNavController(view)
+                .navigate(R.id.action_homeFragment_to_createNewPostFragment)
         }
     }
 }

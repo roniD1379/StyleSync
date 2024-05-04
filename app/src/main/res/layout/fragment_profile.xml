@@ -6,15 +6,6 @@
     tools:context=".fragments.profile.ProfileFragment">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fbtnCreateNewPost"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/baseline_add_24"
-        android:layout_margin="20dp"
-        android:layout_gravity="end|top"
-        />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fBtnEditProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

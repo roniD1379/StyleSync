@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -28,6 +29,8 @@ class ProfileFragment : Fragment() {
     private lateinit var ivProfileImage: ImageView
     private lateinit var tvUsername: TextView
     private lateinit var btnSignOut: Button
+    private lateinit var ibHome: ImageButton
+    private lateinit var ibCreatePost : ImageButton
     private lateinit var btnHome: Button
     private lateinit var btnCreateNewPost: Button
     private var adapter: PostsRecyclerAdapter? = null
@@ -59,7 +62,10 @@ class ProfileFragment : Fragment() {
         btnSignOut = view.findViewById(R.id.btnSignOut)
         btnHome = view.findViewById(R.id.ibHome)
         btnCreateNewPost = view.findViewById(R.id.ibCreatePost)
+        ibHome = view.findViewById(R.id.ibHome)
+        ibCreatePost = view.findViewById(R.id.ibCreatePost)
 
+        // Load user's image
         if (FirebaseAuthManager.CURRENT_USER.uri.isNotEmpty()) {
             Picasso.get().load(FirebaseAuthManager.CURRENT_USER.uri).into(ivProfileImage)
         }
@@ -85,6 +91,14 @@ class ProfileFragment : Fragment() {
             Navigation.findNavController(view)
                 .navigate(R.id.action_profileFragment_to_createNewPostFragment)
         }
+        ibHome.setOnClickListener {
+            Navigation.findNavController(view)
+                .navigate(R.id.action_profileFragment_to_homeFragment)
+        }
+        ibCreatePost.setOnClickListener {
+            Navigation.findNavController(view)
+                .navigate(R.id.action_profileFragment_to_createNewPostFragment)
+        }
     }
 
     private fun setAdapter(view: View) {
@@ -93,7 +107,6 @@ class ProfileFragment : Fragment() {
         postsRecyclerView?.adapter = adapter
         postsRecyclerView?.layoutManager = LinearLayoutManager(context)
         adapter?.listener = object : OnPostClickListener {
-
 
             override fun onPostClicked(post: Post?) {
                 val parcelablePost = PostParcelable(post!!)
