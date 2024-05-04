@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Spinner
@@ -20,6 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import com.application.stylesync.FirebaseAuthManager
 import com.application.stylesync.MainActivity
 import com.application.stylesync.R
 import com.squareup.picasso.Picasso
@@ -35,6 +37,8 @@ class CreateNewPostFragment : Fragment() {
     private var mViewModel: CreateNewPostViewModel? = null
     private lateinit var spTopic: Spinner
     private lateinit var spColor: Spinner
+    private lateinit var ibHome: ImageButton
+    private lateinit var ibProfile : ImageButton
     private val topicOptions = arrayOf("Classic", "Artsy", "Elegant", "Vintage")
     private val themeOptions = arrayOf("Red", "Green", "Black", "Blue")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,6 +107,24 @@ class CreateNewPostFragment : Fragment() {
         spTopic.adapter = topicAdapter
         spColor.adapter = themeAdapter
     }
+
+    private fun findAllViewsById(view: View) {
+        ibProfile = view.findViewById(R.id.ibProfile)
+        ibHome = view.findViewById(R.id.ibHome)
+    }
+
+    private fun setAllOnClicks(view: View) {
+        ibHome.setOnClickListener {
+            Navigation.findNavController(view)
+                .navigate(R.id.action_createNewPostFragment_to_homeFragment)
+        }
+        ibProfile.setOnClickListener {
+            Navigation.findNavController(view)
+                .navigate(R.id.action_createNewPostFragment_to_profileFragment)
+        }
+    }
+
+
 
     private val activityResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(

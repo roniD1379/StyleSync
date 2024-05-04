@@ -17,7 +17,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var ibProfile: ImageButton
-    private lateinit var ibNotification : ImageButton
+    private lateinit var ibCreatePost : ImageButton
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,7 +40,7 @@ class HomeFragment : Fragment() {
 
     private fun findAllViewsById(view: View) {
         ibProfile = view.findViewById(R.id.ibProfile)
-        ibNotification = view.findViewById(R.id.ibNotification)
+        ibCreatePost = view.findViewById(R.id.ibCreatePost)
     }
 
     private fun setAllOnClicks(view: View) {
@@ -48,9 +48,9 @@ class HomeFragment : Fragment() {
             Navigation.findNavController(view)
                 .navigate(R.id.action_homeFragment_to_profileFragment)
         }
-        ibNotification.setOnClickListener {
+        ibCreatePost.setOnClickListener {
             Navigation.findNavController(view)
-                .navigate(R.id.action_homeFragment_to_test)
+                .navigate(R.id.action_homeFragment_to_createNewPostFragment)
         }
     }
 }

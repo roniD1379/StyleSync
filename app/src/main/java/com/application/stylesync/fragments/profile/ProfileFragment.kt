@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -21,6 +22,8 @@ class ProfileFragment : Fragment() {
     private lateinit var ivProfileImage: ImageView
     private lateinit var tvUsername: TextView
     private lateinit var btnSignOut: Button
+    private lateinit var ibHome: ImageButton
+    private lateinit var ibCreatePost : ImageButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,6 +46,8 @@ class ProfileFragment : Fragment() {
         ivProfileImage = view.findViewById(R.id.ivProfileImage)
         tvUsername = view.findViewById(R.id.tvUsername)
         btnSignOut = view.findViewById(R.id.btnSignOut)
+        ibHome = view.findViewById(R.id.ibHome)
+        ibCreatePost = view.findViewById(R.id.ibCreatePost)
 
         if (!FirebaseAuthManager.CURRENT_USER.uri.isEmpty()) {
             Picasso.get().load(FirebaseAuthManager.CURRENT_USER.uri).into(ivProfileImage)
@@ -61,5 +66,13 @@ class ProfileFragment : Fragment() {
             Navigation.findNavController(view)
                 .navigate(R.id.action_profileFragment_to_loginFragment)
         })
+        ibHome.setOnClickListener {
+            Navigation.findNavController(view)
+                .navigate(R.id.action_profileFragment_to_homeFragment)
+        }
+        ibCreatePost.setOnClickListener {
+            Navigation.findNavController(view)
+                .navigate(R.id.action_profileFragment_to_createNewPostFragment)
+        }
     }
 }
