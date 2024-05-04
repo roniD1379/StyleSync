@@ -48,7 +48,7 @@
             <androidx.constraintlayout.utils.widget.MotionLabel
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Topic"
+                android:text="Style"
                 android:layout_marginStart="13dp"
                 />
 
@@ -59,7 +59,7 @@
                 android:layout_margin="10dp">
 
                 <androidx.appcompat.widget.AppCompatSpinner
-                    android:id="@+id/spTopic"
+                    android:id="@+id/spStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="20dp"/>
@@ -69,7 +69,7 @@
             <androidx.constraintlayout.utils.widget.MotionLabel
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Theme Color"
+                android:text="Color"
                 android:layout_marginStart="13dp"
                 />
 
@@ -95,6 +95,14 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="7.5dp"
                 android:text="update" />
+
+            <Button
+                android:id="@+id/btnCancel"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="7.5dp"
+                android:text="Cancel" />
 
         </LinearLayout>
     </ScrollView>

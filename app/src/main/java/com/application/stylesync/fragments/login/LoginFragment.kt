@@ -18,8 +18,8 @@ import com.google.firebase.auth.FirebaseAuth
 
 
 class LoginFragment : Fragment() {
+    private lateinit var mViewModel: LoginViewModel
 
-    private lateinit var viewModel: LoginViewModel
     private lateinit var tvRegister: TextView;
     private lateinit var btnLogin: Button;
     private lateinit var etEmail: EditText
@@ -75,17 +75,16 @@ class LoginFragment : Fragment() {
         }
 
         btnLogin.setOnClickListener {
-            viewModel.loginUser(
+            mViewModel.loginUser(
                 email = etEmail.text.toString().trim(),
                 password = etPassword.text.toString().trim(),
                 f = myObject
             )
-            // Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registerFragment)
         }
     }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
+        mViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
     }
 
 }

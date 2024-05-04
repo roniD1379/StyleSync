@@ -17,7 +17,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Picasso
 
 class ProfileFragment : Fragment() {
-    private var mViewModel: ProfileViewModel? = null
+    private lateinit var mViewModel: ProfileViewModel
+
     private lateinit var fBtnEditProfile: FloatingActionButton
     private lateinit var ivProfileImage: ImageView
     private lateinit var tvUsername: TextView
@@ -38,7 +39,6 @@ class ProfileFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         mViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
     private fun findAllViewsById(view: View) {
@@ -49,6 +49,7 @@ class ProfileFragment : Fragment() {
         ibHome = view.findViewById(R.id.ibHome)
         ibCreatePost = view.findViewById(R.id.ibCreatePost)
 
+        // Load user's image
         if (!FirebaseAuthManager.CURRENT_USER.uri.isEmpty()) {
             Picasso.get().load(FirebaseAuthManager.CURRENT_USER.uri).into(ivProfileImage)
         }

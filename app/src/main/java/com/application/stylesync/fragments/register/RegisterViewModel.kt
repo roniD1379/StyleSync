@@ -10,17 +10,17 @@ class RegisterViewModel : ViewModel() {
         email: String,
         username: String,
         password: String,
-        topic: String,
-        themeColor: String,
+        style: String,
+        color: String,
         f: FirebaseAuthManagerInterface
     ) {
         if (email.trim().isEmpty() ||
             username.trim().isEmpty() ||
             password.trim().isEmpty()
         ) {
-            f.failure("Enter all data!")
+            f.failure("Please fill all the required fields")
         } else {
-            FirebaseAuthManager().registerUser(email, username, password, topic, themeColor, f)
+            FirebaseAuthManager().registerUser(email, username, password, style, color, f)
         }
     }
 
