@@ -5,7 +5,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.application.stylesync.MainActivity
 import com.application.stylesync.Model.FirestoreManager
-import com.example.myapp.firestore.Post
+import com.application.stylesync.Post
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -15,8 +15,9 @@ import java.util.UUID
 class CreateNewPostViewModel : ViewModel() {
     private fun createNewPost(content: String, imageUri: String, topic: String, color: String, callback: () -> Unit) {
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
-        val post = Post(content, imageUri, topic, color, userId);
-        FirestoreManager().addNewPost(post);
+        val id = UUID.randomUUID().toString()
+        val post = Post(content, imageUri, topic, color, userId, id)
+        FirestoreManager().addNewPost(post)
         callback()
     }
 

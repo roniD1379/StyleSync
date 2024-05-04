@@ -5,7 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.application.stylesync.R
-import com.example.myapp.firestore.Post
+import com.application.stylesync.Post
 import com.squareup.picasso.Picasso
 
 class PostViewHolder(itemView: View, private val listener: OnPostClickListener?) : RecyclerView.ViewHolder(itemView) {
@@ -24,7 +24,6 @@ class PostViewHolder(itemView: View, private val listener: OnPostClickListener?)
 
         itemView.setOnClickListener {
             listener?.onPostClicked(post)
-            listener?.onItemClick(adapterPosition)
         }
     }
 

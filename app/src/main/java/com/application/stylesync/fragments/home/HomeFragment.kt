@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.application.stylesync.Adapter.OnPostClickListener
 import com.application.stylesync.Adapter.PostsRecyclerAdapter
 import com.application.stylesync.R
-import com.example.myapp.firestore.Post
+import com.application.stylesync.Post
 
 class HomeFragment : Fragment() {
 
@@ -52,10 +52,6 @@ class HomeFragment : Fragment() {
         postsRecyclerView?.adapter = adapter
         postsRecyclerView?.layoutManager = LinearLayoutManager(context)
         adapter?.listener = object : OnPostClickListener {
-            override fun onItemClick(position: Int) {
-                Toast.makeText(context, "Post $position clicked", Toast.LENGTH_SHORT).show()
-            }
-
             override fun onPostClicked(post: Post?) {
                 if (post != null) {
                     Toast.makeText(context, "Post ${post.userId} clicked", Toast.LENGTH_SHORT).show()

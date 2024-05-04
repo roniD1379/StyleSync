@@ -51,6 +51,9 @@
             app:popUpToInclusive="true"
             app:launchSingleTop="true"
             />
+        <action
+            android:id="@+id/action_profileFragment_to_EditPostFragment"
+            app:destination="@id/EditPostFragment" />
     </fragment>
 
     <fragment
@@ -80,6 +83,19 @@
             app:destination="@id/homeFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/EditPostFragment"
+        android:name="com.application.stylesync.fragments.edit_post.EditPostFragment"
+        android:label="Edit Post"
+        tools:layout="@layout/fragment_edit_post">
+        <action
+            android:id="@+id/action_EditPostFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <!--suppress NavigationFile -->
+        <argument
+            android:name="selectedPost"
+            app:argType="com.application.stylesync.PostParcelable" />
+    </fragment>
 
 
 

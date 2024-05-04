@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.application.stylesync.R
-import com.example.myapp.firestore.Post
+import com.application.stylesync.Post
 
 class PostsRecyclerAdapter(var posts: List<Post>) : RecyclerView.Adapter<PostViewHolder>() {
 
@@ -26,6 +26,5 @@ class PostsRecyclerAdapter(var posts: List<Post>) : RecyclerView.Adapter<PostVie
 }
 
 interface OnPostClickListener {
-    fun onItemClick(position: Int) // post
     fun onPostClicked(post: Post?)
 }
