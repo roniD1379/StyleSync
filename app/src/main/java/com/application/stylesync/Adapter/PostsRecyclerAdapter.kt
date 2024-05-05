@@ -23,6 +23,11 @@ class PostsRecyclerAdapter(var posts: List<Post>) : RecyclerView.Adapter<PostVie
         val post = posts[position]
         holder.bind(post)
     }
+
+    fun setFilter(posts: List<Post>) {
+        this.posts = posts
+        notifyDataSetChanged()
+    }
 }
 
 interface OnPostClickListener {
