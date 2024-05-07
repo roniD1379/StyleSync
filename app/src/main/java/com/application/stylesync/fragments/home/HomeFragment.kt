@@ -67,11 +67,12 @@ class HomeFragment : Fragment() {
                 .navigate(R.id.action_homeFragment_to_createNewPostFragment)
         }
         bFilter.setOnClickListener {
-            ibClear.visibility = View.VISIBLE
+
 
             val filteredPosts = mViewModel.getFilteredPosts()
             if (filteredPosts.isNotEmpty()) {
                 adapter?.setFilter(filteredPosts)
+                ibClear.visibility = View.VISIBLE
                 Toast.makeText(context, "Filtered posts", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, "No posts found with your preferences", Toast.LENGTH_SHORT).show()

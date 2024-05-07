@@ -147,6 +147,9 @@ class EditPostFragment : Fragment() {
         spStyle.adapter = styleAdapter
         spStyle.setSelection(styleOptions.indexOf(post.style))
 
+        println("the styke is : "+post)
+        println(styleOptions.indexOf(post.style))
+
         setUpColorSpinnerValues(post.color)
 
     }
