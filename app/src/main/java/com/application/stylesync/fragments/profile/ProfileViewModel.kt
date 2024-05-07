@@ -1,7 +1,7 @@
 package com.application.stylesync.fragments.profile
 
 import androidx.lifecycle.ViewModel
-import com.application.stylesync.Model.FirestoreManager
+import com.application.stylesync.FirestoreManager
 import com.application.stylesync.Post
 import com.google.firebase.auth.FirebaseAuth
 

@@ -1,15 +1,25 @@
-package com.application.stylesync.Model
+package com.application.stylesync
 
-import com.application.stylesync.Post
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestoreSettings
+import com.google.firebase.firestore.memoryCacheSettings
 
 class FirestoreManager {
 
     private val db = FirebaseFirestore.getInstance()
     private val postsCollection = db.collection("posts")
 
-    fun getAllPosts(callback: (List<Post>) -> Unit) {
-        postsCollection.get().addOnSuccessListener {
+
+    init {
+        val settings = firestoreSettings {
+            setLocalCacheSettings(memoryCacheSettings {  })
+        }
+        db.firestoreSettings = settings
+    }
+
+    fun getAllPosts(since: Long = 0, callback: (List<Post>) -> Unit) {
+        postsCollection.whereGreaterThanOrEqualTo(Post.LAST_UPDATED, Timestamp(since, 0)).get().addOnSuccessListener {
             val posts =  it.documents.map { document ->
                 val id = document.id
                 val imageUri = document.getString("imageUri") ?: ""
@@ -23,25 +33,25 @@ class FirestoreManager {
         }
     }
 
-    fun addNewPost(post: Post) {
-        postsCollection.add(post).addOnSuccessListener {
-            println("DocumentSnapshot written with ID: ${it.id}")
+    fun addNewPost(post: Post, callback: () -> Unit = {}) {
+        postsCollection.add(post.json).addOnSuccessListener {
+            callback()
         }.addOnFailureListener { e ->
             println("Error adding document: $e")
         }
     }
 
-    fun deletePost(postId: String) {
+    fun deletePost(postId: String, callback: () -> Unit = {}) {
         postsCollection.document(postId).delete().addOnSuccessListener {
-            println("DocumentSnapshot successfully deleted!")
+            callback()
         }.addOnFailureListener { e ->
             println("Error deleting document: $e")
         }
     }
 
-    fun updatePost(post: Post) {
-        postsCollection.document(post.id).set(post).addOnSuccessListener {
-            println("DocumentSnapshot successfully written!")
+    fun updatePost(post: Post, callback: () -> Unit = {}) {
+        postsCollection.document(post.id).set(post.json).addOnSuccessListener {
+           callback()
         }.addOnFailureListener { e ->
             println("Error writing document: $e")
         }

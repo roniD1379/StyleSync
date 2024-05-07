@@ -3,8 +3,9 @@ package com.application.stylesync.fragments.create_new_post
 import android.net.Uri
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import com.application.stylesync.DbModel
 import com.application.stylesync.MainActivity
-import com.application.stylesync.Model.FirestoreManager
+import com.application.stylesync.FirestoreManager
 import com.application.stylesync.Post
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
@@ -16,8 +17,7 @@ class CreateNewPostViewModel : ViewModel() {
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
         val id = UUID.randomUUID().toString()
         val post = Post(content, imageUri, style, color, userId, id)
-        FirestoreManager().addNewPost(post)
-        callback()
+        DbModel.instance.addPost(post, callback)
     }
 
     fun uploadPost(file: Uri, content: String, style: String, color: String, callback: () -> Unit) {

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.application.stylesync.R
 import com.application.stylesync.Post
 
-class PostsRecyclerAdapter(var posts: List<Post>) : RecyclerView.Adapter<PostViewHolder>() {
+class PostsRecyclerAdapter(var posts: List<Post>?) : RecyclerView.Adapter<PostViewHolder>() {
 
     var listener: OnPostClickListener? = null
 
@@ -16,12 +16,14 @@ class PostsRecyclerAdapter(var posts: List<Post>) : RecyclerView.Adapter<PostVie
     }
 
     override fun getItemCount(): Int {
-       return posts.size ?: 0
+       return posts?.size ?: 0
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        val post = posts[position]
-        holder.bind(post)
+        val post = posts?.get(position)
+        if (post != null) {
+            holder.bind(post)
+        }
     }
 
     fun setFilter(posts: List<Post>) {
