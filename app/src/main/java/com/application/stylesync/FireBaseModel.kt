@@ -54,8 +54,8 @@ class FirestoreManager {
                 val imageUri = document.getString("imageUri") ?: ""
                 val content = document.getString("content") ?: ""
                 val color = document.getString("color") ?: ""
-                val topic = document.getString("topic") ?: ""
-                Post(content, imageUri, topic, color, userId, id)
+                val style = document.getString("style") ?: ""
+                Post(content, imageUri, style, color, userId, id)
             }
             callback(posts)
         }
