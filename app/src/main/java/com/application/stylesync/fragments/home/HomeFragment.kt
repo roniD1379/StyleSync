@@ -68,7 +68,6 @@ class HomeFragment : Fragment() {
         }
         bFilter.setOnClickListener {
 
-
             val filteredPosts = mViewModel.getFilteredPosts()
             if (filteredPosts.isNotEmpty()) {
                 adapter?.setFilter(filteredPosts)
