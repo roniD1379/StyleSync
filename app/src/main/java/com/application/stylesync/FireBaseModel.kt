@@ -1,6 +1,5 @@
-package com.application.stylesync.Model
+package com.application.stylesync
 
-import com.application.stylesync.Post
 import com.google.firebase.firestore.FirebaseFirestore
 
 class FirestoreManager {
